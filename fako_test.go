@@ -50,6 +50,15 @@ func TestFillExcept(t *testing.T) {
 	assert.NotEqual(t, myCase.Email, "")
 }
 
+func TestFillByMap(t *testing.T) {
+	var myCase OU
+  typemap := make(map[string]string)
+  typemap["IgnoreMe"] = "email_address";
+	FillByMap(&myCase, typemap)
+
+	assert.NotEqual(t, myCase.IgnoreMe, "")
+}
+
 func TestCustomGenerator(t *testing.T) {
 	Register("a_gen", func() string {
 		return "A"

@@ -28,7 +28,16 @@ func FillExcept(strukt interface{}, fields ...string) {
 	fillWithDetails(strukt, []string{}, fields)
 }
 
+//FillByMap fills all the fields that by using maps
+func FillByMap(strukt interface{},typemap map[string]string) {
+	fillWithDetailsAndMap(strukt, []string{}, []string{}, typemap)
+}
+
 func fillWithDetails(strukt interface{}, only []string, except []string) {
+	fillWithDetailsAndMap(strukt, only, except, make(map[string]string))
+}
+
+func fillWithDetailsAndMap(strukt interface{}, only []string, except []string, typemap map[string]string) {
 	elem := reflect.ValueOf(strukt).Elem()
 	elemT := reflect.TypeOf(strukt).Elem()
 
@@ -36,6 +45,12 @@ func fillWithDetails(strukt interface{}, only []string, except []string) {
 		field := elem.Field(i)
 		fieldt := elemT.Field(i)
 		fakeType := fieldt.Tag.Get("fako")
+
+		if fakeType == "" {
+			if ftype, ok := typemap[fieldt.Name]; ok {
+				fakeType = ftype
+			}
+		}
 
 		if fakeType != "" {
 			fakeType = snaker.SnakeToCamel(fakeType)
